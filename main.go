@@ -1,9 +1,9 @@
 package main
 
 import (
+	"be-scraper/recipes"
 	"encoding/json"
 	"fmt"
-	"web-scraper/recipes"
 )
 
 func main() {
