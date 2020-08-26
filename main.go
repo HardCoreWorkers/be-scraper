@@ -1,14 +1,13 @@
 package main
 
 import (
-	"github.com/HardCoreWorkers/be-scraper/recipes"
 	"encoding/json"
 	"fmt"
+	"github.com/HardCoreWorkers/be-scraper/recipes"
 )
 
 func main() {
-	fmt.Println("Hello!")
-	recipes, err := recipes.GetAll()
+	recipes, err := recipes.GetAllRecipes()
 
 	if err != nil {
 		panic(err)
