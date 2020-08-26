@@ -1,7 +1,7 @@
 package main
 
 import (
-	"be-scraper/recipes"
+	"github.com/HardCoreWorkers/be-scraper/recipes"
 	"encoding/json"
 	"fmt"
 )
