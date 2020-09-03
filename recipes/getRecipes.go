@@ -17,9 +17,21 @@ type Recipe struct {
 
 var recipes []Recipe
 
-func GetAll() ([]Recipe, error) {
-	url := "https://www.bbc.co.uk/food/recipes/a-z/a/"
-	doc, err := goquery.NewDocument(url)
+//GetAllRecipes - Loop through a-z + 0-9
+func GetAllRecipes() ([]Recipe, error) {
+	for alphabet := 'a'; alphabet <= 'z'; alphabet++ {
+		ScrapeRecipePages(string(alphabet))
+	}
+	ScrapeRecipePages("0-9")
+	return recipes, nil
+}
+
+//ScrapeRecipePages - For each category, get number of pages to then loop through each
+func ScrapeRecipePages(category string) {
+	url := "https://www.bbc.co.uk/food/recipes/a-z/"
+	fullURL := url + category
+	fmt.Println(fullURL)
+	doc, err := goquery.NewDocument(fullURL)
 
 	if err != nil {
 		panic(err)
@@ -27,20 +39,20 @@ func GetAll() ([]Recipe, error) {
 
 	pagination := doc.Find(".pagination-summary.gel-wrap b.gel-pica-bold").Text()
 
+	// Divide number of recipes by 24 to get number of pages (24 recipes shown per page)
 	numRecipes, err := strconv.ParseFloat(pagination, 10)
 	numPages := math.Ceil(numRecipes / 24)
 	numPg := int(numPages)
 
 	for i := 1; i < numPg+1; i++ {
 		pageNum := strconv.Itoa(i)
-		fullURL := (url + pageNum)
-		GetRecipes(fullURL)
+		fullURL := (fullURL + "/" + pageNum)
+		GetRecipeURLs(fullURL)
 	}
-
-	return recipes, nil
 }
 
-func GetRecipes(url string) {
+//GetRecipeURLs - For each recipe shown on the page, get the recipe url to then parse
+func GetRecipeURLs(url string) {
 	doc, err := goquery.NewDocument(url)
 
 	if err != nil {
@@ -50,12 +62,13 @@ func GetRecipes(url string) {
 	doc.Find(".promo").Each(func(i int, s *goquery.Selection) {
 		link, ok := s.Attr("href")
 		if ok {
-			GetRecipe(link)
+			ParseRecipeDetails(link)
 		}
 	})
 }
 
-func GetRecipe(url string) {
+//ParseRecipeDetails - Parse recipe details
+func ParseRecipeDetails(url string) {
 	doc, err := goquery.NewDocument("https://www.bbc.co.uk" + url)
 
 	if err != nil {
