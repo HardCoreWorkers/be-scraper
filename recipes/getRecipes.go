@@ -84,7 +84,7 @@ func ParseRecipeDetails(url string) {
 	imageURL, ok := doc.Find(".recipe-media__image img").Attr("src")
 
 	if ok {
-		fmt.Println(imageURL)
+		//yay
 	}
 
 	ingredients := []string{}
